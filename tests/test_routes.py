@@ -1,19 +1,5 @@
-# Copyright 2016, 2021 John J. Rofrano. All Rights Reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-# https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 """
-Pet API Service Test Suite
+Inventory API Service Test Suite
 
 Test cases can be run with the following:
   nosetests -v --with-spec --spec-color
@@ -32,7 +18,7 @@ import unittest
 from urllib.parse import quote_plus
 from service import app, status
 from service.models import db, init_db
-from .factories import PetFactory
+from .factories import ItemFactory
 
 # Disable all but critical errors during normal test run
 # uncomment for debugging failing tests
@@ -42,7 +28,7 @@ logging.disable(logging.CRITICAL)
 DATABASE_URI = os.getenv(
     "DATABASE_URI", "postgresql://postgres:postgres@localhost:5432/testdb"
 )
-BASE_URL = "/pets"
+BASE_URL = "/inventory"
 CONTENT_TYPE_JSON = "application/json"
 
 
@@ -77,21 +63,21 @@ class TestPetServer(unittest.TestCase):
         db.session.remove()
         db.drop_all()
 
-    def _create_pets(self, count):
-        """Factory method to create pets in bulk"""
-        pets = []
+    def _create_items(self, count):
+        """Factory method to create items in bulk"""
+        items = []
         for _ in range(count):
-            test_pet = PetFactory()
+            test_item = ItemFactory()
             resp = self.app.post(
-                BASE_URL, json=test_pet.serialize(), content_type=CONTENT_TYPE_JSON
+                BASE_URL, json=test_item.serialize(), content_type=CONTENT_TYPE_JSON
             )
             self.assertEqual(
-                resp.status_code, status.HTTP_201_CREATED, "Could not create test pet"
+                resp.status_code, status.HTTP_201_CREATED, "Could not create test item"
             )
             new_pet = resp.get_json()
-            test_pet.id = new_pet["id"]
-            pets.append(test_pet)
-        return pets
+            test_item.id = test_item["id"]
+            pets.append(test_item)
+        return items
 
     def test_index(self):
         """Test the Home Page"""
