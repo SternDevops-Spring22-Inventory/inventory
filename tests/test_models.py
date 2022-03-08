@@ -15,7 +15,7 @@ import unittest
 from werkzeug.exceptions import NotFound
 from service.models import Items, Condition, DataValidationError, db
 from service import app
-from .factories import ItemFactory
+from tests.factories import ItemFactory
 
 DATABASE_URI = os.getenv(
     "DATABASE_URI", "postgresql://postgres:postgres@localhost:5432/testdb"
@@ -59,29 +59,31 @@ class TestItemModel(unittest.TestCase):
 
     def test_create_a_item(self):
         """Create an item and assert that it exists"""
-        item = Items(name="Fido", category="dog", available=True, gender=Gender.MALE)
-        self.assertTrue(pet is not None)
-        self.assertEqual(pet.id, None)
-        self.assertEqual(pet.name, "Fido")
-        self.assertEqual(pet.category, "dog")
-        self.assertEqual(pet.available, True)
-        self.assertEqual(pet.gender, Gender.MALE)
-        pet = Pet(name="Fido", category="dog", available=False, gender=Gender.FEMALE)
-        self.assertEqual(pet.available, False)
-        self.assertEqual(pet.gender, Gender.FEMALE)
+        logging.info('WHOA HERE WE GO STARTING THE CREATE TEST')
+        item = Items(name="Blue shirt", category="shirt", available=True, condition=Condition.NEW)
+        self.assertTrue(item is not None)
+        self.assertEqual(item.id, None)
+        self.assertEqual(item.name, "Blue shirt")
+        self.assertEqual(item.category, "shirt")
+        self.assertEqual(item.available, True)
+        self.assertEqual(item.condition, Condition.NEW)
+        item = Items(name="Blue shirt", category="shirt", available=False, condition=Condition.USED)
+        self.assertEqual(item.available, False)
+        self.assertEqual(item.condition, Condition.USED)
+        logging.info('Damn that was fast...')
 
-    def test_add_a_pet(self):
-        """Create a pet and add it to the database"""
-        pets = Pet.all()
-        self.assertEqual(pets, [])
-        pet = Pet(name="Fido", category="dog", available=True, gender=Gender.MALE)
-        self.assertTrue(pet is not None)
-        self.assertEqual(pet.id, None)
-        pet.create()
+    def test_add_an_item(self):
+        """Create an item and add it to the database"""
+        items = Items.all()
+        self.assertEqual(items, [])
+        item = Items(name="Blue shirt", category="shirt", available=True, condition=Condition.NEW)
+        self.assertTrue(item is not None)
+        self.assertEqual(item.id, None)
+        item.create()
         # Assert that it was assigned an id and shows up in the database
-        self.assertEqual(pet.id, 1)
-        pets = Pet.all()
-        self.assertEqual(len(pets), 1)
+        self.assertEqual(item.id, 1)
+        items = Items.all()
+        self.assertEqual(len(items), 1)
 
     def test_update_a_pet(self):
         """Update a Pet"""
@@ -112,39 +114,39 @@ class TestItemModel(unittest.TestCase):
         pet.delete()
         self.assertEqual(len(Pet.all()), 0)
 
-    def test_serialize_a_pet(self):
-        """Test serialization of a Pet"""
-        pet = PetFactory()
-        data = pet.serialize()
+    def test_serialize_an_item(self):
+        """Test serialization of an Item"""
+        item = ItemFactory()
+        data = item.serialize()
         self.assertNotEqual(data, None)
         self.assertIn("id", data)
-        self.assertEqual(data["id"], pet.id)
+        self.assertEqual(data["id"], item.id)
         self.assertIn("name", data)
-        self.assertEqual(data["name"], pet.name)
+        self.assertEqual(data["name"], item.name)
         self.assertIn("category", data)
-        self.assertEqual(data["category"], pet.category)
+        self.assertEqual(data["category"], item.category)
         self.assertIn("available", data)
-        self.assertEqual(data["available"], pet.available)
-        self.assertIn("gender", data)
-        self.assertEqual(data["gender"], pet.gender.name)
+        self.assertEqual(data["available"], item.available)
+        self.assertIn("condition", data)
+        self.assertEqual(data["condition"], item.condition)
 
-    def test_deserialize_a_pet(self):
-        """Test deserialization of a Pet"""
+    def test_deserialize_an_item(self):
+        """Test deserialization of an Item"""
         data = {
             "id": 1,
-            "name": "Kitty",
-            "category": "cat",
+            "name": "Blue shirt",
+            "category": "shirt",
             "available": True,
-            "gender": "FEMALE",
+            "condition": "NEW",
         }
-        pet = Pet()
-        pet.deserialize(data)
-        self.assertNotEqual(pet, None)
-        self.assertEqual(pet.id, None)
-        self.assertEqual(pet.name, "Kitty")
-        self.assertEqual(pet.category, "cat")
-        self.assertEqual(pet.available, True)
-        self.assertEqual(pet.gender, Gender.FEMALE)
+        item = Items()
+        item.deserialize(data)
+        self.assertNotEqual(item, None)
+        self.assertEqual(item.id, None)
+        self.assertEqual(item.name, "Blue shirt")
+        self.assertEqual(item.category, "shirt")
+        self.assertEqual(item.available, True)
+        self.assertEqual(item.condition, Condition.NEW)
 
     def test_deserialize_missing_data(self):
         """Test deserialization of a Pet with missing data"""
@@ -166,8 +168,8 @@ class TestItemModel(unittest.TestCase):
         pet = Pet()
         self.assertRaises(DataValidationError, pet.deserialize, data)
 
-    def test_deserialize_bad_gender(self):
-        """Test deserialization of bad gender attribute"""
+    def test_deserialize_bad_condition(self):
+        """Test deserialization of bad condition attribute"""
         test_pet = PetFactory()
         data = test_pet.serialize()
         data["gender"] = "male"  # wrong case

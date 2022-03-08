@@ -19,14 +19,14 @@ Paths:
 ------
 GET /pets - Returns a list all of the Pets
 GET /pets/{id} - Returns the Pet with a given id number
-POST /pets - creates a new Pet record in the database
+POST /items - creates a new Item record in the database
 PUT /pets/{id} - updates a Pet record in the database
 DELETE /pets/{id} - deletes a Pet record in the database
 """
 
 from flask import jsonify, request, url_for, make_response, abort
 from werkzeug.exceptions import NotFound
-from service.models import Pet
+from service.models import Items
 from . import status  # HTTP Status Codes
 from . import app  # Import Flask application
 
@@ -39,22 +39,22 @@ def index():
     app.logger.info("Request for Root URL")
     return (
         jsonify(
-            name="Pet Demo REST API Service",
+            name="Inventory Demo REST API Service",
             version="1.0",
-            paths=url_for("list_pets", _external=True),
+            paths=url_for("list_items", _external=True),
         ),
         status.HTTP_200_OK,
     )
 
 
 ######################################################################
-# LIST ALL PETS
+# LIST ALL ITEMS
 ######################################################################
-@app.route("/pets", methods=["GET"])
-def list_pets():
-    """Returns all of the Pets"""
-    app.logger.info("Request for pet list")
-    pets = []
+@app.route("/inventory", methods=["GET"])
+def list_items():
+    """Returns all of the Items"""
+    app.logger.info("Request for item list")
+    items = []
     category = request.args.get("category")
     name = request.args.get("name")
     if category:
@@ -91,21 +91,21 @@ def get_pets(pet_id):
 ######################################################################
 # ADD A NEW PET
 ######################################################################
-@app.route("/pets", methods=["POST"])
-def create_pets():
+@app.route("/items", methods=["POST"])
+def create_item():
     """
-    Creates a Pet
-    This endpoint will create a Pet based the data in the body that is posted
+    Creates an Item
+    This endpoint will create an Item based the data in the body that is posted
     """
-    app.logger.info("Request to create a pet")
+    app.logger.info("Request to create an item")
     check_content_type("application/json")
-    pet = Pet()
-    pet.deserialize(request.get_json())
-    pet.create()
-    message = pet.serialize()
-    location_url = url_for("get_pets", pet_id=pet.id, _external=True)
+    item = Items()
+    item.deserialize(request.get_json())
+    item.create()
+    message = item.serialize()
+    location_url = url_for("get_items", item_id=item.id, _external=True)
 
-    app.logger.info("Pet with ID [%s] created.", pet.id)
+    app.logger.info("Item with ID [%s] created.", item.id)
     return make_response(
         jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
     )

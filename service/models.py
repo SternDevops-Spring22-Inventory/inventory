@@ -12,11 +12,12 @@ Attributes:
 name (string) - the name of the item
 category (string) - the category the item belongs to (i.e., shirt, shorts)
 available (boolean) - True for items that haven't been sold
-condition (int) - New (0), Returned/used (1), or Unknown (2)
+condition (boolean) - New (0) or Returned/used (1)
 
 """
 import logging
 from enum import Enum
+from xmlrpc.client import Boolean
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
@@ -28,7 +29,7 @@ db = SQLAlchemy()
 
 def init_db(app):
     """Initialize the SQLAlchemy app"""
-    Pet.init_db(app)
+    Items.init_db(app)
 
 
 class DataValidationError(Exception):
@@ -40,7 +41,6 @@ class Condition(Enum):
 
     NEW = 0
     USED = 1
-    UNKNOWN = 2
 
 
 class Items(db.Model):
@@ -59,7 +59,7 @@ class Items(db.Model):
     category = db.Column(db.String(63), nullable=False)
     available = db.Column(db.Boolean(), nullable=False, default=False)
     condition = db.Column(
-        db.Enum(condition), nullable=False, server_default=(Condition.UNKNOWN.name)
+        db.Enum(Condition), nullable=False, default=(Condition.NEW)
     )
 
     ##################################################
@@ -95,20 +95,20 @@ class Items(db.Model):
         db.session.commit()
 
     def serialize(self) -> dict:
-        """Serializes a Pet into a dictionary"""
+        """Serializes a Item into a dictionary"""
         return {
             "id": self.id,
             "name": self.name,
             "category": self.category,
             "available": self.available,
-            "gender": self.gender.name,  # convert enum to string
+            "condition": self.condition.name,  # convert enum to string
         }
 
     def deserialize(self, data: dict):
         """
-        Deserializes a Pet from a dictionary
+        Deserializes an Item from a dictionary
         Args:
-            data (dict): A dictionary containing the Pet data
+            data (dict): A dictionary containing the Item data
         """
         try:
             self.name = data["name"]
@@ -120,14 +120,14 @@ class Items(db.Model):
                     "Invalid type for boolean [available]: "
                     + str(type(data["available"]))
                 )
-            self.gender = getattr(Gender, data["gender"])  # create enum from string
+            self.condition = getattr(Condition, data["condition"])  # create enum from string
         except AttributeError as error:
             raise DataValidationError("Invalid attribute: " + error.args[0])
         except KeyError as error:
-            raise DataValidationError("Invalid pet: missing " + error.args[0])
+            raise DataValidationError("Invalid item: missing " + error.args[0])
         except TypeError as error:
             raise DataValidationError(
-                "Invalid pet: body of request contained bad or no data " + str(error)
+                "Invalid item: body of request contained bad or no data " + str(error)
             )
         return self
 
@@ -151,19 +151,19 @@ class Items(db.Model):
 
     @classmethod
     def all(cls) -> list:
-        """Returns all of the Pets in the database"""
-        logger.info("Processing all Pets")
+        """Returns all of the Items in the database"""
+        logger.info("Processing all Items")
         return cls.query.all()
 
     @classmethod
     def find(cls, pet_id: int):
-        """Finds a Pet by it's ID
+        """Finds an Item by it's ID
 
-        :param pet_id: the id of the Pet to find
-        :type pet_id: int
+        :param item_id: the id of the Item to find
+        :type item_id: int
 
-        :return: an instance with the pet_id, or None if not found
-        :rtype: Pet
+        :return: an instance with the item_id, or None if not found
+        :rtype: Item
 
         """
         logger.info("Processing lookup for id %s ...", pet_id)
@@ -226,8 +226,8 @@ class Items(db.Model):
         return cls.query.filter(cls.available == available)
 
     @classmethod
-    def find_by_gender(cls, gender: Gender = Gender.UNKNOWN) -> list:
-        """Returns all Pets by their Gender
+    def find_by_condition(cls, condition: Condition = Condition.NEW) -> list:
+        """Returns all Items by their Gender
 
         :param gender: values are ['MALE', 'FEMALE', 'UNKNOWN']
         :type available: enum

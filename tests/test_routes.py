@@ -18,7 +18,7 @@ import unittest
 from urllib.parse import quote_plus
 from service import app, status
 from service.models import db, init_db
-from .factories import ItemFactory
+from tests.factories import ItemFactory
 
 # Disable all but critical errors during normal test run
 # uncomment for debugging failing tests
@@ -35,8 +35,8 @@ CONTENT_TYPE_JSON = "application/json"
 ######################################################################
 #  T E S T   C A S E S
 ######################################################################
-class TestPetServer(unittest.TestCase):
-    """Pet Server Tests"""
+class TestItemServer(unittest.TestCase):
+    """Item Server Tests"""
 
     @classmethod
     def setUpClass(cls):
@@ -74,9 +74,9 @@ class TestPetServer(unittest.TestCase):
             self.assertEqual(
                 resp.status_code, status.HTTP_201_CREATED, "Could not create test item"
             )
-            new_pet = resp.get_json()
+            new_item = resp.get_json()
             test_item.id = test_item["id"]
-            pets.append(test_item)
+            items.append(test_item)
         return items
 
     def test_index(self):
@@ -84,7 +84,7 @@ class TestPetServer(unittest.TestCase):
         resp = self.app.get("/")
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
-        self.assertEqual(data["name"], "Pet Demo REST API Service")
+        self.assertEqual(data["name"], "Item Demo REST API Service")
 
     def test_get_pet_list(self):
         """Get a list of Pets"""
@@ -110,36 +110,42 @@ class TestPetServer(unittest.TestCase):
         resp = self.app.get("/pets/0")
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
 
-    def test_create_pet(self):
-        """Create a new Pet"""
-        test_pet = PetFactory()
-        logging.debug(test_pet)
+    def test_create_item(self):
+        """Create a new Item"""
+        test_item = ItemFactory()
+        logging.debug(test_item)
         resp = self.app.post(
-            BASE_URL, json=test_pet.serialize(), content_type=CONTENT_TYPE_JSON
+            BASE_URL, json=test_item.serialize(), content_type=CONTENT_TYPE_JSON
         )
         self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
         # Make sure location header is set
         location = resp.headers.get("Location", None)
         self.assertIsNotNone(location)
         # Check the data is correct
-        new_pet = resp.get_json()
-        self.assertEqual(new_pet["name"], test_pet.name, "Names do not match")
+        new_item = resp.get_json()
+        self.assertEqual(new_item["name"], test_item.name, "Names do not match")
         self.assertEqual(
-            new_pet["category"], test_pet.category, "Categories do not match"
+            new_item["category"], test_item.category, "Categories do not match"
         )
         self.assertEqual(
-            new_pet["available"], test_pet.available, "Availability does not match"
+            new_item["available"], test_item.available, "Availability does not match"
+        )
+        self.assertEqual(
+            new_item["condition"], test_item.condition, "Condition does not match"
         )
         # Check that the location header was correct
         resp = self.app.get(location, content_type=CONTENT_TYPE_JSON)
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        new_pet = resp.get_json()
-        self.assertEqual(new_pet["name"], test_pet.name, "Names do not match")
+        new_item = resp.get_json()
+        self.assertEqual(new_item["name"], test_item.name, "Names do not match")
         self.assertEqual(
-            new_pet["category"], test_pet.category, "Categories do not match"
+            new_item["category"], test_item.category, "Categories do not match"
         )
         self.assertEqual(
-            new_pet["available"], test_pet.available, "Availability does not match"
+            new_item["available"], test_item.available, "Availability does not match"
+        )
+        self.assertEqual(
+            new_item["condition"], test_item.condition, "Condition does not match"
         )
 
     # def test_create_pet_no_data(self):

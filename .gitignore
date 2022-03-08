@@ -1,23 +1,20 @@
-# Local environment
+# Local OS metadata
 .DS_Store
 Thumbs.db
-
-# Vagrant
-.vagrant/
 
 # VS Code
 .vscode/
 
-# Test reports
+# Vagrant
+.vagrant
+
+# TDD
 unittests.xml
 
-# database files
+# databases
+*.db
 db/*
 !db/.keep
-
-# SonarQube Reports
-.scannerwork/
-.sonarlint/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
