@@ -1,19 +1,5 @@
-# Copyright 2016, 2021 John J. Rofrano. All Rights Reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-# https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 """
-Test cases for Pet Model
+Test cases for Item Model
 
 Test cases can be run with:
     nosetests
@@ -27,9 +13,9 @@ import os
 import logging
 import unittest
 from werkzeug.exceptions import NotFound
-from service.models import Pet, Gender, DataValidationError, db
+from service.models import Items, Condition, DataValidationError, db
 from service import app
-from .factories import PetFactory
+from .factories import ItemFactory
 
 DATABASE_URI = os.getenv(
     "DATABASE_URI", "postgresql://postgres:postgres@localhost:5432/testdb"
@@ -37,11 +23,11 @@ DATABASE_URI = os.getenv(
 
 
 ######################################################################
-#  P E T   M O D E L   T E S T   C A S E S
+#  I T E M   M O D E L   T E S T   C A S E S
 ######################################################################
 # pylint: disable=too-many-public-methods
-class TestPetModel(unittest.TestCase):
-    """Test Cases for Pet Model"""
+class TestItemModel(unittest.TestCase):
+    """Test Cases for Item Model"""
 
     @classmethod
     def setUpClass(cls):
@@ -50,7 +36,7 @@ class TestPetModel(unittest.TestCase):
         app.config["DEBUG"] = False
         app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URI
         app.logger.setLevel(logging.CRITICAL)
-        Pet.init_db(app)
+        Items.init_db(app)
 
     @classmethod
     def tearDownClass(cls):
@@ -71,9 +57,9 @@ class TestPetModel(unittest.TestCase):
     #  T E S T   C A S E S
     ######################################################################
 
-    def test_create_a_pet(self):
-        """Create a pet and assert that it exists"""
-        pet = Pet(name="Fido", category="dog", available=True, gender=Gender.MALE)
+    def test_create_a_item(self):
+        """Create an item and assert that it exists"""
+        item = Items(name="Fido", category="dog", available=True, gender=Gender.MALE)
         self.assertTrue(pet is not None)
         self.assertEqual(pet.id, None)
         self.assertEqual(pet.name, "Fido")
