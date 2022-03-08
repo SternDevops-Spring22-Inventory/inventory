@@ -1,19 +1,29 @@
 # This is our guide for how to use the Inventory Microservice (and make changes)
 
-## Pulling the repo
+## Cloning the repo
 
 - Open your terminal (git bash on Windows)
-- Paste the command: git pull https://github.com/SternDevops-Spring22-Inventory/inventory.git
+- Paste the command: git clone https://github.com/SternDevops-Spring22-Inventory/inventory.git
 - cd to inventory
 - type code .
 
-## TEST
+## Pulling new versions
 
-## Working on a branch
+- Make sure you're in main branch, use command: $ git checkout main
+- Pull new versions, use command: $ git pull
+
+## Creating new branch
 
 - Open terminal
 - Use $ git status to check what branch you are on
 - Use the command: $ git checkout-b"(Branch Name)"
+- A new branch is created.
+
+## Switching to existing branch
+
+- Open terminal
+- Use $ git status to check what branch you are on
+- Use the command: $ git checkout <branch name>
 - A new branch is created.
 
 ## Pushing changes
