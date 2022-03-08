@@ -2,7 +2,7 @@
 
 ## Pulling the repo
 
-- Open your terminal
+- Open your terminal (git bash on Windows)
 - Paste the command: git pull https://github.com/SternDevops-Spring22-Inventory/inventory.git
 - cd to inventory
 - type code .
@@ -19,7 +19,7 @@
 ## Pushing changes
 
 - Save changes to VS Code
-- Open terminal
+- Open terminal (VS code terminal)
 - Use the following commands:
 - $ git status (confirm what branch you are on)
 - $ git add .
