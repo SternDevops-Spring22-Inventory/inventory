@@ -1,27 +1,9 @@
-# Copyright 2016, 2019 John J. Rofrano. All Rights Reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-# https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 """
-Pet Store Service
+Inventory Service
 
 Paths:
 ------
-GET /pets - Returns a list all of the Pets
-GET /pets/{id} - Returns the Pet with a given id number
-POST /items - creates a new Item record in the database
-PUT /pets/{id} - updates a Pet record in the database
-DELETE /pets/{id} - deletes a Pet record in the database
+POST /inventory - creates a new Item record in the database
 """
 
 from flask import jsonify, request, url_for, make_response, abort
@@ -48,50 +30,9 @@ def index():
 
 
 ######################################################################
-# LIST ALL ITEMS
+# CREATE A NEW ITEM
 ######################################################################
-@app.route("/inventory", methods=["GET"])
-def list_items():
-    """Returns all of the Items"""
-    app.logger.info("Request for item list")
-    items = []
-    category = request.args.get("category")
-    name = request.args.get("name")
-    if category:
-        pets = Pet.find_by_category(category)
-    elif name:
-        pets = Pet.find_by_name(name)
-    else:
-        pets = Pet.all()
-
-    results = [pet.serialize() for pet in pets]
-    app.logger.info("Returning %d pets", len(results))
-    return make_response(jsonify(results), status.HTTP_200_OK)
-
-
-######################################################################
-# RETRIEVE A PET
-######################################################################
-@app.route("/pets/<int:pet_id>", methods=["GET"])
-def get_pets(pet_id):
-    """
-    Retrieve a single Pet
-
-    This endpoint will return a Pet based on it's id
-    """
-    app.logger.info("Request for pet with id: %s", pet_id)
-    pet = Pet.find(pet_id)
-    if not pet:
-        raise NotFound("Pet with id '{}' was not found.".format(pet_id))
-
-    app.logger.info("Returning pet: %s", pet.name)
-    return make_response(jsonify(pet.serialize()), status.HTTP_200_OK)
-
-
-######################################################################
-# ADD A NEW PET
-######################################################################
-@app.route("/items", methods=["POST"])
+@app.route("/inventory", methods=["POST"])
 def create_item():
     """
     Creates an Item
@@ -110,49 +51,6 @@ def create_item():
         jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
     )
 
-
-######################################################################
-# UPDATE AN EXISTING PET
-######################################################################
-@app.route("/pets/<int:pet_id>", methods=["PUT"])
-def update_pets(pet_id):
-    """
-    Update a Pet
-
-    This endpoint will update a Pet based the body that is posted
-    """
-    app.logger.info("Request to update pet with id: %s", pet_id)
-    check_content_type("application/json")
-    pet = Pet.find(pet_id)
-    if not pet:
-        raise NotFound("Pet with id '{}' was not found.".format(pet_id))
-    pet.deserialize(request.get_json())
-    pet.id = pet_id
-    pet.update()
-
-    app.logger.info("Pet with ID [%s] updated.", pet.id)
-    return make_response(jsonify(pet.serialize()), status.HTTP_200_OK)
-
-
-######################################################################
-# DELETE A PET
-######################################################################
-@app.route("/pets/<int:pet_id>", methods=["DELETE"])
-def delete_pets(pet_id):
-    """
-    Delete a Pet
-
-    This endpoint will delete a Pet based the id specified in the path
-    """
-    app.logger.info("Request to delete pet with id: %s", pet_id)
-    pet = Pet.find(pet_id)
-    if pet:
-        pet.delete()
-
-    app.logger.info("Pet with ID [%s] delete complete.", pet_id)
-    return make_response("", status.HTTP_204_NO_CONTENT)
-
-
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S
 ######################################################################
@@ -168,3 +66,4 @@ def check_content_type(media_type):
         status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
         "Content-Type must be {}".format(media_type),
     )
+
