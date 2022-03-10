@@ -124,5 +124,19 @@ class TestItemServer(unittest.TestCase):
             new_item["condition"], test_item.condition, "Condition does not match"
         )
 
+    def test_get_item(self):
+        """Get a single Item"""
+        # get the id of an item
+        test_item = self._create_items(1)[0]
+        resp = self.app.get(
+            "/inventory/{}".format(test_item.id), content_type=CONTENT_TYPE_JSON
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(data["name"], test_item.name)
 
+    def test_get_item_not_found(self):
+        """Get an Item thats not found"""
+        resp = self.app.get("/inventory/0")
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)   
 

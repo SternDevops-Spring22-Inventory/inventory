@@ -119,3 +119,19 @@ class TestItemModel(unittest.TestCase):
         self.assertEqual(item.category, "shirt")
         self.assertEqual(item.available, True)
         self.assertEqual(item.condition, Condition.NEW)
+
+    def test_find_item(self):
+        """Find an Item by ID"""
+        items = ItemFactory.create_batch(3)
+        for item in items:
+            item.create()
+        logging.debug(items)
+        # make sure they got saved
+        self.assertEqual(len(Items.all()), 3)
+        # find the 2nd item in the list
+        item = Items.find(items[1].id)
+        self.assertIsNot(item, None)
+        self.assertEqual(item.id, items[1].id)
+        self.assertEqual(item.name, items[1].name)
+        self.assertEqual(item.available, items[1].available)
+        self.assertEqual(item.condition, items[1].condition)
