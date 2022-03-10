@@ -126,7 +126,7 @@ class TestItemModel(unittest.TestCase):
         self.assertEqual(items, [])
         # Create 5 Items
         for i in range(5):
-            item = itemFactory()
+            item = ItemFactory()
             item.create()
         # See if we get back 5 items
         item = Items.all()
