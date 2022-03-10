@@ -18,4 +18,4 @@ class ItemFactory(factory.Factory):
     name = factory.Faker("item_name")
     category = FuzzyChoice(choices=["shirt", "socks", "pants", "shorts"])
     available = FuzzyChoice(choices=[True, False])
-    condition = FuzzyChoice(choices=[Condition.NEW, Condition.USED, Condition.UNKNOWN])
+    condition = FuzzyChoice(choices=[Condition.NEW, Condition.USED])

@@ -28,8 +28,7 @@ COPY requirements.txt .
 RUN python -m pip install --upgrade pip wheel && \
     pip install -r requirements.txt
 
-ENV PORT 8000
-EXPOSE $PORT
+EXPOSE 8000
 
 # Enable color terminal for docker exec bash
 ENV TERM=xterm-256color

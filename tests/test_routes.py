@@ -18,7 +18,7 @@ import unittest
 from urllib.parse import quote_plus
 from service import app, status
 from service.models import db, init_db
-from .factories import ItemFactory
+from tests.factories import ItemFactory
 
 # Disable all but critical errors during normal test run
 # uncomment for debugging failing tests
@@ -35,8 +35,8 @@ CONTENT_TYPE_JSON = "application/json"
 ######################################################################
 #  T E S T   C A S E S
 ######################################################################
-class TestPetServer(unittest.TestCase):
-    """Pet Server Tests"""
+class TestItemServer(unittest.TestCase):
+    """Item Server Tests"""
 
     @classmethod
     def setUpClass(cls):
@@ -74,168 +74,55 @@ class TestPetServer(unittest.TestCase):
             self.assertEqual(
                 resp.status_code, status.HTTP_201_CREATED, "Could not create test item"
             )
-            new_pet = resp.get_json()
+            new_item = resp.get_json()
             test_item.id = test_item["id"]
-            pets.append(test_item)
+            items.append(test_item)
         return items
 
     def test_index(self):
         """Test the Home Page"""
-        resp = self.app.get("/")
+        resp = self.app.get("/inventory")
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
-        self.assertEqual(data["name"], "Pet Demo REST API Service")
+        self.assertEqual(data["name"], "Item Demo REST API Service")
 
-    def test_get_pet_list(self):
-        """Get a list of Pets"""
-        self._create_pets(5)
-        resp = self.app.get(BASE_URL)
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        data = resp.get_json()
-        self.assertEqual(len(data), 5)
-
-    def test_get_pet(self):
-        """Get a single Pet"""
-        # get the id of a pet
-        test_pet = self._create_pets(1)[0]
-        resp = self.app.get(
-            "/pets/{}".format(test_pet.id), content_type=CONTENT_TYPE_JSON
-        )
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        data = resp.get_json()
-        self.assertEqual(data["name"], test_pet.name)
-
-    def test_get_pet_not_found(self):
-        """Get a Pet thats not found"""
-        resp = self.app.get("/pets/0")
-        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
-
-    def test_create_pet(self):
-        """Create a new Pet"""
-        test_pet = PetFactory()
-        logging.debug(test_pet)
+    def test_create_item(self):
+        """Create a new Item"""
+        test_item = ItemFactory()
+        logging.debug(test_item)
         resp = self.app.post(
-            BASE_URL, json=test_pet.serialize(), content_type=CONTENT_TYPE_JSON
+            BASE_URL, json=test_item.serialize(), content_type=CONTENT_TYPE_JSON
         )
         self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
         # Make sure location header is set
         location = resp.headers.get("Location", None)
         self.assertIsNotNone(location)
         # Check the data is correct
-        new_pet = resp.get_json()
-        self.assertEqual(new_pet["name"], test_pet.name, "Names do not match")
+        new_item = resp.get_json()
+        self.assertEqual(new_item["name"], test_item.name, "Names do not match")
         self.assertEqual(
-            new_pet["category"], test_pet.category, "Categories do not match"
+            new_item["category"], test_item.category, "Categories do not match"
         )
         self.assertEqual(
-            new_pet["available"], test_pet.available, "Availability does not match"
+            new_item["available"], test_item.available, "Availability does not match"
+        )
+        self.assertEqual(
+            new_item["condition"], test_item.condition, "Condition does not match"
         )
         # Check that the location header was correct
         resp = self.app.get(location, content_type=CONTENT_TYPE_JSON)
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        new_pet = resp.get_json()
-        self.assertEqual(new_pet["name"], test_pet.name, "Names do not match")
+        new_item = resp.get_json()
+        self.assertEqual(new_item["name"], test_item.name, "Names do not match")
         self.assertEqual(
-            new_pet["category"], test_pet.category, "Categories do not match"
+            new_item["category"], test_item.category, "Categories do not match"
         )
         self.assertEqual(
-            new_pet["available"], test_pet.available, "Availability does not match"
+            new_item["available"], test_item.available, "Availability does not match"
+        )
+        self.assertEqual(
+            new_item["condition"], test_item.condition, "Condition does not match"
         )
 
-    # def test_create_pet_no_data(self):
-    #     """Create a Pet with missing data"""
-    #     resp = self.app.post(BASE_URL, json={}, content_type=CONTENT_TYPE_JSON)
-    #     self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
 
-    # def test_create_pet_no_content_type(self):
-    #     """Create a Pet with no content type"""
-    #     resp = self.app.post(BASE_URL)
-    #     self.assertEqual(resp.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
 
-    # def test_create_pet_bad_available(self):
-    #     """ Create a Pet with bad available data """
-    #     test_pet = PetFactory()
-    #     logging.debug(test_pet)
-    #     # change available to a string
-    #     test_pet.available = "true"
-    #     resp = self.app.post(
-    #         BASE_URL, json=test_pet.serialize(), content_type="application/json"
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
-
-    # def test_create_pet_bad_gender(self):
-    #     """ Create a Pet with bad available data """
-    #     pet = PetFactory()
-    #     logging.debug(pet)
-    #     # change gender to a bad string
-    #     test_pet = pet.serialize()
-    #     test_pet["gender"] = "male"    # wrong case
-    #     resp = self.app.post(
-    #         BASE_URL, json=test_pet, content_type="application/json"
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_update_pet(self):
-        """Update an existing Pet"""
-        # create a pet to update
-        test_pet = PetFactory()
-        resp = self.app.post(
-            BASE_URL, json=test_pet.serialize(), content_type=CONTENT_TYPE_JSON
-        )
-        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
-
-        # update the pet
-        new_pet = resp.get_json()
-        logging.debug(new_pet)
-        new_pet["category"] = "unknown"
-        resp = self.app.put(
-            "/pets/{}".format(new_pet["id"]),
-            json=new_pet,
-            content_type=CONTENT_TYPE_JSON,
-        )
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        updated_pet = resp.get_json()
-        self.assertEqual(updated_pet["category"], "unknown")
-
-    def test_delete_pet(self):
-        """Delete a Pet"""
-        test_pet = self._create_pets(1)[0]
-        resp = self.app.delete(
-            "{0}/{1}".format(BASE_URL, test_pet.id), content_type=CONTENT_TYPE_JSON
-        )
-        self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(len(resp.data), 0)
-        # make sure they are deleted
-        resp = self.app.get(
-            "{0}/{1}".format(BASE_URL, test_pet.id), content_type=CONTENT_TYPE_JSON
-        )
-        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
-
-    def test_query_pet_list_by_category(self):
-        """Query Pets by Category"""
-        pets = self._create_pets(10)
-        test_category = pets[0].category
-        category_pets = [pet for pet in pets if pet.category == test_category]
-        resp = self.app.get(
-            BASE_URL, query_string="category={}".format(quote_plus(test_category))
-        )
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        data = resp.get_json()
-        self.assertEqual(len(data), len(category_pets))
-        # check the data just to be sure
-        for pet in data:
-            self.assertEqual(pet["category"], test_category)
-
-    # @patch('service.routes.Pet.find_by_name')
-    # def test_bad_request(self, bad_request_mock):
-    #     """ Test a Bad Request error from Find By Name """
-    #     bad_request_mock.side_effect = DataValidationError()
-    #     resp = self.app.get(BASE_URL, query_string='name=fido')
-    #     self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
-
-    # @patch('service.routes.Pet.find_by_name')
-    # def test_mock_search_data(self, pet_find_mock):
-    #     """ Test showing how to mock data """
-    #     pet_find_mock.return_value = [MagicMock(serialize=lambda: {'name': 'fido'})]
-    #     resp = self.app.get(BASE_URL, query_string='name=fido')
-    #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
