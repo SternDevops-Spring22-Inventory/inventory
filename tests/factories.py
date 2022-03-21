@@ -15,7 +15,7 @@ class ItemFactory(factory.Factory):
         model = Items
 
     id = factory.Sequence(lambda n: n)
-    name = factory.Faker("item_name")
+    name = FuzzyChoice(choices=["item_name"])
     category = FuzzyChoice(choices=["shirt", "socks", "pants", "shorts"])
     available = FuzzyChoice(choices=[True, False])
     condition = FuzzyChoice(choices=[Condition.NEW, Condition.USED])
