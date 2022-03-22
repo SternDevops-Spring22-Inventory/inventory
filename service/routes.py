@@ -4,7 +4,7 @@ Inventory Service
 Paths:
 ------
 POST /inventory - creates a new Item record in the database
-DELETE /pets/{id} - deletes an Item record in the database
+DELETE /inventory/{id} - deletes an Item record in the database
 """
 
 from flask import jsonify, request, url_for, make_response, abort
