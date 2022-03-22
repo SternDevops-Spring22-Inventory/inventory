@@ -130,3 +130,22 @@ class TestItemModel(unittest.TestCase):
         self.assertEqual(item.available, True)
         self.assertEqual(item.condition, Condition.NEW)
 
+    def test_update_a_item(self):
+        """Update a Pet"""
+        item = ItemFactory()
+        logging.debug(item)
+        item.create()
+        logging.debug(item)
+        self.assertEqual(item.id, 1)
+        # Change it an save it
+        item.category = "shirt"
+        original_id = item.id
+        item.update()
+        self.assertEqual(item.id, original_id)
+        self.assertEqual(item.category, "shirt")
+        # Fetch it back and make sure the id hasn't changed
+        # but the data did change
+        items = Items.all()
+        self.assertEqual(len(items), 1)
+        self.assertEqual(items[0].id, 1)
+        self.assertEqual(items[0].category, "shirt")
