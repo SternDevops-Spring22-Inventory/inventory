@@ -100,43 +100,43 @@ class TestItemServer(unittest.TestCase):
         resp = self.app.get("/inventory/0")
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)    
   
-    # def test_create_item(self):
-    #     """Create a new Item"""
-    #     test_item = ItemFactory()
-    #     logging.debug(test_item)
-    #     resp = self.app.post(
-    #         BASE_URL, json=test_item.serialize(), content_type=CONTENT_TYPE_JSON
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
-    #     # Make sure location header is set
-    #     location = resp.headers.get("Location", None)
-    #     self.assertIsNotNone(location)
-    #     # Check the data is correct
-    #     new_item = resp.get_json()
-    #     self.assertEqual(new_item["name"], test_item.name, "Names do not match")
-    #     self.assertEqual(
-    #         new_item["category"], test_item.category, "Categories do not match"
-    #     )
-    #     self.assertEqual(
-    #         new_item["available"], test_item.available, "Availability does not match"
-    #     )
-    #     self.assertEqual(
-    #         new_item["condition"], test_item.condition, "Condition does not match"
-    #     )
-    #     # Check that the location header was correct
-    #     resp = self.app.get(location, content_type=CONTENT_TYPE_JSON)
-    #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
-    #     new_item = resp.get_json()
-    #     self.assertEqual(new_item["name"], test_item.name, "Names do not match")
-    #     self.assertEqual(
-    #         new_item["category"], test_item.category, "Categories do not match"
-    #     )
-    #     self.assertEqual(
-    #         new_item["available"], test_item.available, "Availability does not match"
-    #     )
-    #     self.assertEqual(
-    #         new_item["condition"], test_item.condition, "Condition does not match"
-    #     )
+    def test_create_item(self):
+        """Create a new Item"""
+        test_item = ItemFactory()
+        logging.debug(test_item)
+        resp = self.app.post(
+            BASE_URL, json=test_item.serialize(), content_type=CONTENT_TYPE_JSON
+        )
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+        # Make sure location header is set
+        location = resp.headers.get("Location", None)
+        self.assertIsNotNone(location)
+        # Check the data is correct
+        new_item = resp.get_json()
+        self.assertEqual(new_item["name"], test_item.name, "Names do not match")
+        self.assertEqual(
+            new_item["category"], test_item.category, "Categories do not match"
+        )
+        self.assertEqual(
+            new_item["available"], test_item.available, "Availability does not match"
+        )
+        self.assertEqual(
+            new_item["condition"], test_item.condition.name, "Condition does not match"
+        )
+        # Check that the location header was correct
+        resp = self.app.get(location, content_type=CONTENT_TYPE_JSON)
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        new_item = resp.get_json()
+        self.assertEqual(new_item["name"], test_item.name, "Names do not match")
+        self.assertEqual(
+            new_item["category"], test_item.category, "Categories do not match"
+        )
+        self.assertEqual(
+            new_item["available"], test_item.available, "Availability does not match"
+        )
+        self.assertEqual(
+            new_item["condition"], test_item.condition.name, "Condition does not match"
+        )
 
   
 
