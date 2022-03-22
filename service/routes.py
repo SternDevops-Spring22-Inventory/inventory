@@ -4,6 +4,7 @@ Inventory Service
 Paths:
 ------
 POST /inventory - creates a new Item record in the database
+DELETE /inventory/{id} - deletes an Item record in the database
 """
 
 from flask import jsonify, request, url_for, make_response, abort
@@ -28,7 +29,6 @@ def index():
         status.HTTP_200_OK,
     )
 
-
 ######################################################################
 # CREATE A NEW ITEM
 ######################################################################
@@ -51,7 +51,6 @@ def create_item():
         jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
     )
 
-
 ######################################################################
 # RETRIEVE AN INVENTORY ITEM
 ######################################################################
@@ -68,25 +67,6 @@ def get_items(item_id):
 
     app.logger.info("Returning item: %s", item.name)
     return make_response(jsonify(item.serialize()), status.HTTP_200_OK)
-
-
-
-######################################################################
-#  U T I L I T Y   F U N C T I O N S
-######################################################################
-
-
-def check_content_type(media_type):
-    """Checks that the media type is correct"""
-    content_type = request.headers.get("Content-Type")
-    if content_type and content_type == media_type:
-        return
-    app.logger.error("Invalid Content-Type: %s", content_type)
-    abort(
-        status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
-        "Content-Type must be {}".format(media_type),
-    )
-
 
 ######################################################################
 # UPDATE AN EXISTING INVENTORY ITEM
@@ -108,3 +88,36 @@ def update_items(item_id):
 
     app.logger.info("Item with ID [%s] updated.", item.id)
     return make_response(jsonify(item.serialize()), status.HTTP_200_OK)
+
+######################################################################
+# DELETE AN EXISTING INVENTORY ITEM
+######################################################################
+@app.route("/inventory/<int:item_id>", methods=["DELETE"])
+def delete_item(item_id):
+    """
+    Delete a Item
+    This endpoint will delete a Item based the id specified in the path
+    """
+    app.logger.info("Request to delete item with id: %s", item_id)
+    item = Items.find(item_id)
+    if item:
+        item.delete()
+
+    app.logger.info("Item with ID [%s] delete complete.", item_id)
+    return make_response("", status.HTTP_204_NO_CONTENT)
+
+
+######################################################################
+#  U T I L I T Y   F U N C T I O N S
+######################################################################
+
+def check_content_type(media_type):
+    """Checks that the media type is correct"""
+    content_type = request.headers.get("Content-Type")
+    if content_type and content_type == media_type:
+        return
+    app.logger.error("Invalid Content-Type: %s", content_type)
+    abort(
+        status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
+        "Content-Type must be {}".format(media_type),
+    )

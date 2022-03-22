@@ -160,3 +160,16 @@ class TestItemServer(unittest.TestCase):
         updated_item = resp.get_json()
         self.assertEqual(updated_item["category"], "unknown")
 
+    def test_delete_item(self):
+        """Delete an Item"""
+        test_item = self._create_items(1)[0]
+        resp = self.app.delete(
+            "{0}/{1}".format(BASE_URL, test_item.id), content_type=CONTENT_TYPE_JSON
+        )
+        self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(len(resp.data), 0)
+        # make sure they are deleted
+        resp = self.app.get(
+            "{0}/{1}".format(BASE_URL, test_item.id), content_type=CONTENT_TYPE_JSON
+        )
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
