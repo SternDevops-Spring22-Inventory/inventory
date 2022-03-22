@@ -87,3 +87,24 @@ def check_content_type(media_type):
         "Content-Type must be {}".format(media_type),
     )
 
+
+######################################################################
+# UPDATE AN EXISTING INVENTORY ITEM
+######################################################################
+@app.route("/inventory/<int:item_id>", methods=["PUT"])
+def update_items(item_id):
+    """
+    Update an Inventory Item
+    This endpoint will update an Inventory Item based the body that is posted
+    """
+    app.logger.info("Request to update item with id: %s", item_id)
+    check_content_type("application/json")
+    item = Items.find(item_id)
+    if not item:
+        raise NotFound("Item with id '{}' was not found.".format(item_id))
+    item.deserialize(request.get_json())
+    item.id = item_id
+    item.update()
+
+    app.logger.info("Item with ID [%s] updated.", item.id)
+    return make_response(jsonify(item.serialize()), status.HTTP_200_OK)

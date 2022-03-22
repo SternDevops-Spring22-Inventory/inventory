@@ -138,5 +138,25 @@ class TestItemServer(unittest.TestCase):
             new_item["condition"], test_item.condition.name, "Condition does not match"
         )
 
-  
+    def test_update_item(self):
+        """Update an existing Item"""
+        # create a item to update
+        test_item = ItemFactory()
+        resp = self.app.post(
+            BASE_URL, json=test_item.serialize(), content_type=CONTENT_TYPE_JSON
+        )
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+
+        # update the item
+        new_item = resp.get_json()
+        logging.debug(new_item)
+        new_item["category"] = "unknown"
+        resp = self.app.put(
+            "/inventory/{}".format(new_item["id"]),
+            json=new_item,
+            content_type=CONTENT_TYPE_JSON,
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        updated_item = resp.get_json()
+        self.assertEqual(updated_item["category"], "unknown")
 
