@@ -131,7 +131,7 @@ class TestItemModel(unittest.TestCase):
         self.assertEqual(item.condition, Condition.NEW)
 
     def test_update_a_item(self):
-        """Update a Pet"""
+        """Update an Item"""
         item = ItemFactory()
         logging.debug(item)
         item.create()
