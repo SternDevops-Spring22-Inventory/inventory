@@ -96,6 +96,15 @@ class TestItemModel(unittest.TestCase):
         self.assertEqual(found_item.category, item.category)
         self.assertEqual(found_item.condition, item.condition)
 
+    def test_delete_a_item(self):
+        """Delete an Item"""
+        item = ItemFactory()
+        item.create()
+        self.assertEqual(len(Items.all()), 1)
+        # delete the item and make sure it isn't in the database
+        item.delete()
+        self.assertEqual(len(Items.all()), 0)
+
     def test_serialize_an_item(self):
         """Test serialization of an Item"""
         item = ItemFactory()

@@ -4,6 +4,7 @@ Inventory Service
 Paths:
 ------
 POST /inventory - creates a new Item record in the database
+DELETE /pets/{id} - deletes an Item record in the database
 """
 
 from flask import jsonify, request, url_for, make_response, abort
@@ -87,3 +88,16 @@ def check_content_type(media_type):
         "Content-Type must be {}".format(media_type),
     )
 
+@app.route("/inventory/<int:item_id>", methods=["DELETE"])
+def delete_item(item_id):
+    """
+    Delete a Item
+    This endpoint will delete a Item based the id specified in the path
+    """
+    app.logger.info("Request to delete item with id: %s", item_id)
+    item = Items.find(item_id)
+    if item:
+        item.delete()
+
+    app.logger.info("Item with ID [%s] delete complete.", item_id)
+    return make_response("", status.HTTP_204_NO_CONTENT)
