@@ -51,6 +51,26 @@ def create_item():
         jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
     )
 
+
+######################################################################
+# RETRIEVE AN INVENTORY ITEM
+######################################################################
+@app.route("/inventory/<int:item_id>", methods=["GET"])
+def get_items(item_id):
+    """
+    Retrieve a single Item
+    This endpoint will return a Item based on it's id
+    """
+    app.logger.info("Request for item with id: %s", item_id)
+    item = Items.find(item_id)
+    if not item:
+        raise NotFound("Item with id '{}' was not found.".format(item_id))
+
+    app.logger.info("Returning item: %s", item.name)
+    return make_response(jsonify(item.serialize()), status.HTTP_200_OK)
+
+
+
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S
 ######################################################################
