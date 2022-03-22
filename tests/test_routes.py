@@ -156,7 +156,7 @@ class TestItemServer(unittest.TestCase):
             json=new_item,
             content_type=CONTENT_TYPE_JSON,
         )
-        self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
         updated_item = resp.get_json()
         self.assertEqual(updated_item["category"], "unknown")
 
