@@ -118,7 +118,7 @@ class TestItemServer(unittest.TestCase):
             new_item["category"], test_item.category, "Categories do not match"
         )
         self.assertEqual(
-            new_item["available"], test_item.available, "Availability does not match"
+            new_item["quantity"], test_item.quantity, "Quantity does not match"
         )
         self.assertEqual(
             new_item["condition"], test_item.condition.name, "Condition does not match"
@@ -132,7 +132,7 @@ class TestItemServer(unittest.TestCase):
             new_item["category"], test_item.category, "Categories do not match"
         )
         self.assertEqual(
-            new_item["available"], test_item.available, "Availability does not match"
+            new_item["quantity"], test_item.quantity, "Quantity does not match"
         )
         self.assertEqual(
             new_item["condition"], test_item.condition.name, "Condition does not match"

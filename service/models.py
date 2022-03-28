@@ -11,7 +11,7 @@ Attributes:
 -----------
 name (string) - the name of the item
 category (string) - the category the item belongs to (i.e., shirt, shorts)
-available (boolean) - True for items that haven't been sold
+quantity (int) - number of items in respective categort 
 condition (boolean) - New (0) or Returned/used (1)
 
 """
@@ -57,7 +57,7 @@ class Items(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(63), nullable=False)
     category = db.Column(db.String(63), nullable=False)
-    available = db.Column(db.Boolean(), nullable=False, default=False)
+    quantity = db.Column(db.Integer, primary_key=False)
     condition = db.Column(
         db.Enum(Condition), nullable=False, default=(Condition.NEW)
     )
@@ -100,7 +100,7 @@ class Items(db.Model):
             "id": self.id,
             "name": self.name,
             "category": self.category,
-            "available": self.available,
+            "quantity": self.quantity,
             "condition": self.condition.name,  # convert enum to string
         }
 
@@ -113,12 +113,12 @@ class Items(db.Model):
         try:
             self.name = data["name"]
             self.category = data["category"]
-            if isinstance(data["available"], bool):
-                self.available = data["available"]
+            if isinstance(data["quantity"], int):
+                self.quantity = data["quantity"]
             else:
                 raise DataValidationError(
-                    "Invalid type for boolean [available]: "
-                    + str(type(data["available"]))
+                    "Invalid type for int [quantity]: "
+                    + str(type(data["quantity"]))
                 )
             self.condition = getattr(Condition, data["condition"])  # create enum from string
         except AttributeError as error:
@@ -156,7 +156,7 @@ class Items(db.Model):
         return cls.query.all()
 
     @classmethod
-    def find(cls, pet_id: int):
+    def find(cls, item_id: int):
         """Finds an Item by it's ID
 
         :param item_id: the id of the Item to find
@@ -166,6 +166,6 @@ class Items(db.Model):
         :rtype: Item
 
         """
-        logger.info("Processing lookup for id %s ...", pet_id)
-        return cls.query.get(pet_id)
+        logger.info("Processing lookup for id %s ...", item_id)
+        return cls.query.get(item_id)
 
