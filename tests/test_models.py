@@ -59,22 +59,22 @@ class TestItemModel(unittest.TestCase):
 
     def test_create_a_item(self):
         """Create an item and assert that it exists"""
-        item = Items(name="blue shirt", category="shirt", available=True, condition=Condition.NEW)
+        item = Items(name="blue shirt", category="shirt", quantity=2, condition=Condition.NEW)
         self.assertTrue(item is not None)
         self.assertEqual(item.id, None)
         self.assertEqual(item.name, "blue shirt")
         self.assertEqual(item.category, "shirt")
-        self.assertEqual(item.available, True)
+        self.assertEqual(item.quantity, 2)
         self.assertEqual(item.condition, Condition.NEW)
-        item = Items(name="blue shirt", category="shirt", available=False, condition=Condition.USED)
-        self.assertEqual(item.available, False)
+        item = Items(name="blue shirt", category="shirt", quantity=2, condition=Condition.USED)
+        self.assertEqual(item.quantity, 2)
         self.assertEqual(item.condition, Condition.USED)
 
     def test_add_an_item(self):
         """Create an item and add it to the database"""
         items = Items.all()
         self.assertEqual(items, [])
-        item = Items(name="blue shirt", category="shirt", available=True, condition=Condition.NEW)
+        item = Items(name="blue shirt", category="shirt", quantity=2, condition=Condition.NEW)
         self.assertTrue(item is not None)
         self.assertEqual(item.id, None)
         item.create()
@@ -94,6 +94,7 @@ class TestItemModel(unittest.TestCase):
         self.assertEqual(found_item.id, item.id)
         self.assertEqual(found_item.name, item.name)
         self.assertEqual(found_item.category, item.category)
+        self.assertEqual(found_item.quantity, item.quantity)
         self.assertEqual(found_item.condition, item.condition)
 
     def test_delete_a_item(self):
@@ -116,8 +117,8 @@ class TestItemModel(unittest.TestCase):
         self.assertEqual(data["name"], item.name)
         self.assertIn("category", data)
         self.assertEqual(data["category"], item.category)
-        self.assertIn("available", data)
-        self.assertEqual(data["available"], item.available)
+        self.assertIn("quantity", data)
+        self.assertEqual(data["quantity"], item.quantity)
         self.assertIn("condition", data)
         self.assertEqual(data["condition"], item.condition.name)
 
@@ -127,7 +128,7 @@ class TestItemModel(unittest.TestCase):
             "id": 1,
             "name": "Blue shirt",
             "category": "shirt",
-            "available": True,
+            "quantity": 2,
             "condition": "NEW",
         }
         item = Items()
@@ -136,7 +137,7 @@ class TestItemModel(unittest.TestCase):
         self.assertEqual(item.id, None)
         self.assertEqual(item.name, "Blue shirt")
         self.assertEqual(item.category, "shirt")
-        self.assertEqual(item.available, True)
+        self.assertEqual(item.quantity, 2)
         self.assertEqual(item.condition, Condition.NEW)
 
     def test_update_a_item(self):
