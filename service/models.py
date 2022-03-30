@@ -169,3 +169,14 @@ class Items(db.Model):
         logger.info("Processing lookup for id %s ...", item_id)
         return cls.query.get(item_id)
 
+
+    @classmethod
+    def find_by_category(cls, category: str) -> list:
+        """Returns all of the Items in a category
+        :param category: the category of the Pets you want to match
+        :type category: str
+        :return: a collection of Items in that category
+        :rtype: list
+        """
+        logger.info("Processing category query for %s ...", category)
+        return cls.query.filter(cls.category == category)

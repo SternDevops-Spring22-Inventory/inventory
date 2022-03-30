@@ -14,7 +14,7 @@ import os
 import logging
 import unittest
 
-# from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, patch
 from urllib.parse import quote_plus
 from service import app, status
 from service.models import db, init_db
@@ -173,3 +173,21 @@ class TestItemServer(unittest.TestCase):
             "{0}/{1}".format(BASE_URL, test_item.id), content_type=CONTENT_TYPE_JSON
         )
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+
+    ######################################################################
+    # T E S T   E R R O R   H A N D L E R S
+    ######################################################################
+
+    def test_method_not_allowed(self):
+        resp = self.app.put('/inventory')
+        self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+    
+    @patch("service.models.Items.find_by_category")
+    def test_server_error(self, server_error_mock):
+        """Test a 500 Internal Server Error Handler"""
+        server_error_mock.return_value = None  # code expects a list
+        # Turn off testing to allow production behavior
+        app.config["TESTING"] = False
+        resp = self.app.get(BASE_URL, query_string="category=shirt")
+        app.config["TESTING"] = True
+        self.assertEqual(resp.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
