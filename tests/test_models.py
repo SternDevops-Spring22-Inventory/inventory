@@ -153,7 +153,6 @@ class TestItemModel(unittest.TestCase):
         item = Items()
         self.assertRaises(DataValidationError, item.deserialize, data)  
 
-################### New Tests
     def test_deserialize_bad_quantity(self):
         """Test deserialization of bad quantity attribute"""
         test_item = ItemFactory()
@@ -169,7 +168,6 @@ class TestItemModel(unittest.TestCase):
         data["condition"] = "new"  # wrong case
         item = Items()
         self.assertRaises(DataValidationError, item.deserialize, data)
-##############
 
     def test_update_a_item(self):
         """Update an Item"""
