@@ -85,7 +85,7 @@ class TestItemServer(unittest.TestCase):
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         self.assertIn(b"Inventory Demo REST API Service", resp.data)    
 
-    def test_get_pet_list(self):
+    def test_get_item_list(self):
         """Get a list of Items"""
         self._create_items(5)
         resp = self.app.get(BASE_URL)

@@ -49,7 +49,6 @@ def list_items():
     else:
         items = Items.all()
 
-    #results = [items.serialize() for item in items]
     results = [item.serialize() for item in items]
     app.logger.info("Returning %d items", len(results))
     return make_response(jsonify(results), status.HTTP_200_OK)
