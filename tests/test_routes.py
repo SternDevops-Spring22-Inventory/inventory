@@ -200,3 +200,8 @@ class TestItemServer(unittest.TestCase):
         resp = self.app.get(BASE_URL, query_string="category=shirt")
         app.config["TESTING"] = True
         self.assertEqual(resp.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def test_create_item_no_content_type(self):
+        """Create a Item with no content type"""
+        resp = self.app.post(BASE_URL)
+        self.assertEqual(resp.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
