@@ -14,7 +14,7 @@ import os
 import logging
 import unittest
 
-# from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, patch
 from urllib.parse import quote_plus
 from service import app, status
 from service.models import db, init_db
@@ -81,8 +81,17 @@ class TestItemServer(unittest.TestCase):
 
     def test_index(self):
         """Test the Home Page"""
-        resp = self.app.get("/inventory")
-        self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+        resp = self.app.get("/")
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        self.assertIn(b"Inventory Demo REST API Service", resp.data)    
+
+    def test_get_item_list(self):
+        """Get a list of Items"""
+        self._create_items(5)
+        resp = self.app.get(BASE_URL)
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(len(data), 5)    
 
     def test_get_item(self):
         """Get a single Item"""
@@ -173,3 +182,26 @@ class TestItemServer(unittest.TestCase):
             "{0}/{1}".format(BASE_URL, test_item.id), content_type=CONTENT_TYPE_JSON
         )
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+
+    ######################################################################
+    # T E S T   E R R O R   H A N D L E R S
+    ######################################################################
+
+    def test_method_not_allowed(self):
+        resp = self.app.put('/inventory')
+        self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+    
+    @patch("service.models.Items.find_by_category")
+    def test_server_error(self, server_error_mock):
+        """Test a 500 Internal Server Error Handler"""
+        server_error_mock.return_value = None  # code expects a list
+        # Turn off testing to allow production behavior
+        app.config["TESTING"] = False
+        resp = self.app.get(BASE_URL, query_string="category=shirt")
+        app.config["TESTING"] = True
+        self.assertEqual(resp.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def test_create_item_no_content_type(self):
+        """Create a Item with no content type"""
+        resp = self.app.post(BASE_URL)
+        self.assertEqual(resp.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
