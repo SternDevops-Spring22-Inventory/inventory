@@ -81,8 +81,17 @@ class TestItemServer(unittest.TestCase):
 
     def test_index(self):
         """Test the Home Page"""
-        resp = self.app.get("/inventory")
-        self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+        resp = self.app.get("/")
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        self.assertIn(b"Inventory Demo REST API Service", resp.data)    
+
+    def test_get_pet_list(self):
+        """Get a list of Items"""
+        self._create_items(5)
+        resp = self.app.get(BASE_URL)
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(len(data), 5)    
 
     def test_get_item(self):
         """Get a single Item"""

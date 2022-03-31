@@ -3,8 +3,11 @@ Inventory Service
 
 Paths:
 ------
+GET /inventory - Returns a list all of the Items
+GET /inventory{id} - Returns the Item with a given id number
 POST /inventory - creates a new Item record in the database
-DELETE /inventory/{id} - deletes an Item record in the database
+PUT /inventory/{id} - updates a Item record in the database
+DELETE /inventory/{id} - deletes a Item record in the database
 """
 
 from flask import jsonify, request, url_for, make_response, abort
@@ -28,6 +31,28 @@ def index():
         ),
         status.HTTP_200_OK,
     )
+
+######################################################################
+# LIST ALL ITEMS
+######################################################################
+@app.route("/inventory", methods=["GET"])
+def list_items():
+    """Returns all of the Items"""
+    app.logger.info("Request for item list")
+    items = []
+    category = request.args.get("category")
+    name = request.args.get("name")
+    if category:
+        items = Items.find_by_category(category)
+    elif name:
+        items = Items.find_by_name(name)
+    else:
+        items = Items.all()
+
+    results = [items.serialize() for item in items]
+    app.logger.info("Returning %d items", len(results))
+    return make_response(jsonify(results), status.HTTP_200_OK)
+
 
 ######################################################################
 # CREATE A NEW ITEM
