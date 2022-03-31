@@ -140,8 +140,7 @@ class TestItemModel(unittest.TestCase):
         self.assertEqual(item.quantity, 2)
         self.assertEqual(item.condition, Condition.NEW)
 
-##################################
-# New test cases /NS/
+
     def test_deserialize_missing_data(self):
         """Test deserialization of an Item with missing data"""
         data = {"id": 1, "name": "white socks", "category": "socks"}
@@ -152,8 +151,7 @@ class TestItemModel(unittest.TestCase):
         """Test deserialization of bad data"""
         data = "this is not a dictionary"
         item = Items()
-        self.assertRaises(DataValidationError, item.deserialize, data)       
-########################        
+        self.assertRaises(DataValidationError, item.deserialize, data)             
 
     def test_update_a_item(self):
         """Update an Item"""
@@ -175,11 +173,20 @@ class TestItemModel(unittest.TestCase):
         self.assertEqual(items[0].id, 1)
         self.assertEqual(items[0].category, "shirt")
 
+    # def test_find_by_category(self):
+    #     """Find Items by Category"""
+    #     Items(name="blue shirt", category="shirt", available=True).create()
+    #     Items(name="white socks", category="socks", available=False).create()
+    #     items = Items.find_by_category("socks")
+    #     self.assertEqual(items[0].category, "socks")
+    #     self.assertEqual(items[0].name, "white socks")
+    #     self.assertEqual(items[0].available, False)
+
     def test_find_by_category(self):
         """Find Items by Category"""
-        Items(name="blue shirt", category="shirt", available=True).create()
-        Items(name="white socks", category="socks", available=False).create()
+        Items(name="blue shirt", category="shirt", quantity=5).create()
+        Items(name="white socks", category="socks", quantity=0).create()
         items = Items.find_by_category("socks")
         self.assertEqual(items[0].category, "socks")
         self.assertEqual(items[0].name, "white socks")
-        self.assertEqual(items[0].available, False)
+        self.assertEqual(items[0].quantity, 0)
