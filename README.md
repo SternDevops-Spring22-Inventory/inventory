@@ -1,3 +1,5 @@
+[![Build Status](https://github.com/SternDevops-Spring22-Inventory/inventory/actions/workflows/workflow.yml/badge.svg)](https://github.com/SternDevops-Spring22-Inventory/inventory/actions)
+
 # This is our guide for how to use the Inventory Microservice (and make changes)
 
 ## Cloning the repo
