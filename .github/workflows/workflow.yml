@@ -57,5 +57,5 @@ jobs:
         env:
           DATABASE_URI: "postgresql://postgres:postgres@postgres:5432/testdb"
 
-      - name: Codecov
-        uses: codecov/codecov-action@v2.1.0
+      - name: Upload code coverage
+        uses: SternDevops-Spring22-Inventory/inventory@v2
