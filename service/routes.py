@@ -8,6 +8,7 @@ GET /inventory/{id} - Returns the Item with a given id number
 POST /inventory - creates a new Item record in the database
 PUT /inventory/{id} - updates a Item record in the database
 DELETE /inventory/{id} - deletes a Item record in the database
+PUT /inventory/{id}/disable
 """
 
 from flask import jsonify, request, url_for, make_response, abort
