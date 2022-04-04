@@ -21,6 +21,7 @@ from xmlrpc.client import Boolean
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
+
 logger = logging.getLogger("flask.app")
 
 # Create the SQLAlchemy object to be initialized later in init_db()
@@ -155,6 +156,7 @@ class Items(db.Model):
         logger.info("Processing all Items")
         return cls.query.all()
 
+    
     @classmethod
     def find(cls, item_id: int):
         """Finds an Item by it's ID
@@ -169,14 +171,17 @@ class Items(db.Model):
         logger.info("Processing lookup for id %s ...", item_id)
         return cls.query.get(item_id)
 
+    @classmethod
+    def find_by_name(cls, name: str) -> list:
+        """Returns all Items with the given name"""
+
+        logger.info("Processing name query for %s ...", name)
+        return cls.query.filter(cls.name == name)
 
     @classmethod
     def find_by_category(cls, category: str) -> list:
-        """Returns all of the Items in a category
-        :param category: the category of the Pets you want to match
-        :type category: str
-        :return: a collection of Items in that category
-        :rtype: list
-        """
+        """Returns all of the Items in a category"""
+        
         logger.info("Processing category query for %s ...", category)
         return cls.query.filter(cls.category == category)
+
