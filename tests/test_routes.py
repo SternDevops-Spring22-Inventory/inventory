@@ -206,3 +206,18 @@ class TestItemServer(unittest.TestCase):
         """Create a Item with no content type"""
         resp = self.app.post(BASE_URL)
         self.assertEqual(resp.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+
+    def test_query_by_name(self):
+        """Query Items by name (string)"""
+        items = self._create_items(5)
+        test_name = items[0].name
+        name_count = len([item for item in items if item.name == test_name])
+        resp = self.app.get(
+            BASE_URL, query_string=f"name={quote_plus(test_name)}"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(len(data), name_count)
+        # check the data just to be sure
+        for item in data:
+            self.assertEqual(item["name"], test_name)
