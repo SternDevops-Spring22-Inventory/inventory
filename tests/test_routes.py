@@ -184,25 +184,25 @@ class TestItemServer(unittest.TestCase):
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
 
 
-##### Disable Pet Tests    
+##### Disable Item Tests    
     def test_disable_an_item(self):
         """Disable an Item"""
         item = self._create_items(10)
-        available_items = [item for item in item if item.available is True]
-        item = available_items[0]
+        quantity_items = [item for item in item if item.quantity is 5 ]
+        item = quantity_items[0]
         resp = self.app.put(f"{BASE_URL}/{item.id}/disable", content_type="application/json")
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         resp = self.app.get(f"{BASE_URL}/{item.id}")
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
         logging.debug("Response data: %s", data)
-        self.assertEqual(data["available"], False)
+        self.assertEqual(data["quantity"], 0)
 
     def test_disable_not_available(self):
         """Disable an Item that is not available"""
         item = self._create_items(10)
-        unavailable_items = [item for item in item if item.available is False]
-        item = unavailable_items[0]
+        zero_quantity_items = [item for item in item if item.quantity is 0]
+        item = zero_quantity_items[0]
         resp = self.app.put(f"{BASE_URL}/{item.id}/disable", content_type="application/json")
         self.assertEqual(resp.status_code, status.HTTP_409_CONFLICT)
 

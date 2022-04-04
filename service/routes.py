@@ -141,12 +141,12 @@ def disable_item(item_id):
     item = Items.find(item_id)
     if not item:
         abort(status.HTTP_404_NOT_FOUND, f"Item with id '{item_id}' was not found.")
-    if not item.available:
+    if not item.quantity:
         abort(
             status.HTTP_409_CONFLICT,
-            f"Item with id '{item_id}' is not available.",
+            f"Item with id '{item_id}' is out of stock.",
         )
-    item.available = False
+    item.quantity = 0
     item.update()
     return make_response(jsonify(item.serialize()), status.HTTP_200_OK)    
 
