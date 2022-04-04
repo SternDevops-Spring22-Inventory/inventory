@@ -188,7 +188,7 @@ class TestItemServer(unittest.TestCase):
     def test_disable_an_item(self):
         """Disable an Item"""
         item = self._create_items(10)
-        quantity_items = [item for item in item if item.quantity is 5 ]
+        quantity_items = [item for item in item if item.quantity == 5 ]
         item = quantity_items[0]
         resp = self.app.put(f"{BASE_URL}/{item.id}/disable", content_type="application/json")
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
@@ -201,7 +201,7 @@ class TestItemServer(unittest.TestCase):
     def test_disable_not_available(self):
         """Disable an Item that is not available"""
         item = self._create_items(10)
-        zero_quantity_items = [item for item in item if item.quantity is 0]
+        zero_quantity_items = [item for item in item if item.quantity == 0]
         item = zero_quantity_items[0]
         resp = self.app.put(f"{BASE_URL}/{item.id}/disable", content_type="application/json")
         self.assertEqual(resp.status_code, status.HTTP_409_CONFLICT)
