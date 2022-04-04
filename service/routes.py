@@ -135,6 +135,20 @@ def delete_item(item_id):
 
 
 ######################################################################
+# Disabling an Item
+######################################################################
+@app.route("/inventory/<item_id>/disable", methods=["PUT"])
+def disable_item(item_id):
+    """Disabling an Item makes it unavailable"""
+    item = Items.find(item_id)
+    if not item:
+        abort(status.HTTP_404_NOT_FOUND, f"Item with id '{item_id}' was not found.")
+    item.quantity = 0
+    item.update()
+    return make_response(jsonify(item.serialize()), status.HTTP_200_OK)    
+
+
+######################################################################
 #  U T I L I T Y   F U N C T I O N S
 ######################################################################
 

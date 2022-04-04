@@ -183,6 +183,20 @@ class TestItemServer(unittest.TestCase):
         )
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
 
+   
+    def test_disable_an_item(self):
+        """Disable an Item"""
+        item = self._create_items(10)
+        quantity_items = [item for item in item if item.quantity > 0 ]
+        item = quantity_items[0]
+        resp = self.app.put(f"{BASE_URL}/{item.id}/disable", content_type="application/json")
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        resp = self.app.get(f"{BASE_URL}/{item.id}")
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        logging.debug("Response data: %s", data)
+        self.assertEqual(data["quantity"], 0)
+
 
     ######################################################################
     # T E S T   E R R O R   H A N D L E R S
