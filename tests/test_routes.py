@@ -196,14 +196,6 @@ class TestItemServer(unittest.TestCase):
         logging.debug("Response data: %s", data)
         self.assertEqual(data["quantity"], 0)
 
-    # def test_disable_not_available(self):
-    #     """Disable an Item that is not available"""
-    #     item = self._create_items(10)
-    #     zero_quantity_items = [item for item in item if item.quantity == 0]
-    #     item = zero_quantity_items[0]
-    #     resp = self.app.put(f"{BASE_URL}/{item.id}/disable", content_type="application/json")
-    #     self.assertEqual(resp.status_code, status.HTTP_409_CONFLICT)
-
     ######################################################################
     # T E S T   E R R O R   H A N D L E R S
     ######################################################################
