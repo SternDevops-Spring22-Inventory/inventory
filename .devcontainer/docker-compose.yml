@@ -17,6 +17,7 @@ services:
       FLASK_APP: service:app
       FLASK_ENV: development
       DATABASE_URI: postgresql://postgres:postgres@postgres:5432/postgres
+      PORT: 8000
     networks:
       - dev
     depends_on:
