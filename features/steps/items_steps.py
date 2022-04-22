@@ -19,7 +19,7 @@ def step_impl(context):
     context.resp = requests.get(context.base_url + '/inventory', headers=headers)
     expect(context.resp.status_code).to_equal(200)
     for item in context.resp.json():
-        context.resp = requests.delete(context.base_url + '/inventory/' + str(item["_id"]), headers=headers)
+        context.resp = requests.delete(context.base_url + '/inventory/' + str(item["id"]), headers=headers)
         expect(context.resp.status_code).to_equal(204)
     
     # load the database with new items
@@ -28,7 +28,7 @@ def step_impl(context):
         data = {
             "name": row['name'],
             "category": row['category'],
-            "quantity": row['quantity'],
+            "quantity": int(row['quantity']),
             "condition": row['condition']
         }
         payload = json.dumps(data)
