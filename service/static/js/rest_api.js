@@ -64,30 +64,27 @@ $(function () {
   });
 
   // ****************************************
-  // Update a Pet
+  // Update an Item
   // ****************************************
 
   $('#update-btn').click(function () {
-    let pet_id = $('#pet_id').val();
-    let name = $('#pet_name').val();
-    let category = $('#pet_category').val();
-    let available = $('#pet_available').val() == 'true';
-    let gender = $('#pet_gender').val();
-    let birthday = $('#pet_birthday').val();
+    let name = $('#item_name').val();
+    let category = $('#item_category').val();
+    let quantity = $('#item_quantity').val();
+    let condition = $('#item_condition').val();
 
     let data = {
       name: name,
       category: category,
-      available: available,
-      gender: gender,
-      birthday: birthday,
+      quantity: quantity,
+      condition: condition,
     };
 
     $('#flash_message').empty();
 
     let ajax = $.ajax({
       type: 'PUT',
-      url: `/pets/${pet_id}`,
+      url: `/inventory/${item_id}`,
       contentType: 'application/json',
       data: JSON.stringify(data),
     });
