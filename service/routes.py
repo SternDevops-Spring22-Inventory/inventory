@@ -22,16 +22,8 @@ from . import app  # Import Flask application
 ######################################################################
 @app.route("/")
 def index():
-    """Root URL response"""
-    app.logger.info("Request for Root URL")
-    return (
-        jsonify(
-            name="Inventory Demo REST API Service",
-            version="1.0",
-            paths=url_for("list_items", _external=True),
-        ),
-        status.HTTP_200_OK,
-    )
+    """Base URL for our service"""
+    return app.send_static_file("index.html")    
 
 ######################################################################
 # LIST ALL ITEMS
