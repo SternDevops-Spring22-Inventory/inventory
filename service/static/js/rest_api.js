@@ -158,19 +158,19 @@ $(function () {
   // ****************************************
 
   $('#clear-btn').click(function () {
-    $('#pet_id').val('');
+    $('#item_id').val('');
     $('#flash_message').empty();
     clear_form_data();
   });
 
   // ****************************************
-  // Search for a Pet
+  // Search for an Item
   // ****************************************
 
   $('#search-btn').click(function () {
-    let name = $('#pet_name').val();
-    let category = $('#pet_category').val();
-    let available = $('#pet_available').val() == 'true';
+    let name = $('#item_name').val();
+    let category = $('#item_category').val();
+    let available = $('#item_available').val() == 'true';
 
     let queryString = '';
 
@@ -196,7 +196,7 @@ $(function () {
 
     let ajax = $.ajax({
       type: 'GET',
-      url: `/pets?${queryString}`,
+      url: `/inventory?${queryString}`,
       contentType: 'application/json',
       data: '',
     });
@@ -209,24 +209,23 @@ $(function () {
       table += '<th class="col-md-2">ID</th>';
       table += '<th class="col-md-2">Name</th>';
       table += '<th class="col-md-2">Category</th>';
-      table += '<th class="col-md-2">Available</th>';
-      table += '<th class="col-md-2">Gender</th>';
-      table += '<th class="col-md-2">Birthday</th>';
+      table += '<th class="col-md-2">Quantity</th>';
+      table += '<th class="col-md-2">Condition</th>';
       table += '</tr></thead><tbody>';
-      let firstPet = '';
+      let firstItem = '';
       for (let i = 0; i < res.length; i++) {
-        let pet = res[i];
-        table += `<tr id="row_${i}"><td>${pet._id}</td><td>${pet.name}</td><td>${pet.category}</td><td>${pet.available}</td><td>${pet.gender}</td><td>${pet.birthday}</td></tr>`;
+        let item = res[i];
+        table += `<tr id="row_${i}"><td>${item._id}</td><td>${item.name}</td><td>${item.category}</td><td>${item.quantity}</td><td>${pet.condition}</td></tr>`;
         if (i == 0) {
-          firstPet = pet;
+          firstItem = item;
         }
       }
       table += '</tbody></table>';
       $('#search_results').append(table);
 
       // copy the first result to the form
-      if (firstPet != '') {
-        update_form_data(firstPet);
+      if (firstItem != '') {
+        update_form_data(firstItem);
       }
 
       flash_message('Success');
