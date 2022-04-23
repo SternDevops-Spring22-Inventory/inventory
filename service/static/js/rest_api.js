@@ -5,11 +5,11 @@ $(function () {
 
   // Updates the form with data from the response
   function update_form_data(res) {
-    $('#item_id').val(res._id);
+    $('#item_id').val(res.id);
     $('#item_name').val(res.name);
     $('#item_category').val(res.category);
     $('#item_quantity').val(res.quantity);
-    $('#item_condition').val(res.gender);
+    $('#item_condition').val(res.condition);
   }
 
   /// Clears all form fields
@@ -68,6 +68,7 @@ $(function () {
   // ****************************************
 
   $('#update-btn').click(function () {
+    let item_id = $("#item_id").val();
     let name = $('#item_name').val();
     let category = $('#item_category').val();
     let quantity = $('#item_quantity').val();
@@ -215,7 +216,7 @@ $(function () {
       let firstItem = '';
       for (let i = 0; i < res.length; i++) {
         let item = res[i];
-        table += `<tr id="row_${i}"><td>${item._id}</td><td>${item.name}</td><td>${item.category}</td><td>${item.quantity}</td><td>${pet.condition}</td></tr>`;
+        table += `<tr id="row_${i}"><td>${item.id}</td><td>${item.name}</td><td>${item.category}</td><td>${item.quantity}</td><td>${item.condition}</td></tr>`;
         if (i == 0) {
           firstItem = item;
         }

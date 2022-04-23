@@ -1,6 +1,26 @@
+######################################################################
+# Copyright 2016, 2021 John J. Rofrano. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+######################################################################
+
+# pylint: disable=function-redefined, missing-function-docstring
+
 """
 Web Steps
-Steps file for web interactions with Silenium
+
+Steps file for web interactions with Selenium
+
 For information on Waiting until elements are present in the HTML see:
     https://selenium-python.readthedocs.io/waits.html
 """
@@ -26,6 +46,13 @@ def step_impl(context, message):
     """ Check the document title for a message """
     expect(context.driver.title).to_contain(message)
 
+@then('I should not see "{message}"')
+def step_impl(context, message):
+    elements = context.driver.find_elements(By.TAG_NAME, 'body')
+    body = elements[0].text
+    error_msg = "I should not see '%s' in '%s'" % (message, body)
+    ensure(message in body, False, error_msg)
+
 @when('I set the "{element_name}" to "{text_string}"')
 def step_impl(context, element_name, text_string):
     element_id = ID_PREFIX + element_name.lower().replace(' ', '_')
@@ -39,12 +66,11 @@ def step_impl(context, text, element_name):
     element = Select(context.driver.find_element_by_id(element_id))
     element.select_by_visible_text(text)
 
-@then('I should not see "{message}"')
-def step_impl(context, message):
-    elements = context.driver.find_elements(By.TAG_NAME, 'body')
-    body = elements[0].text
-    error_msg = "I should not see '%s' in '%s'" % (message, body)
-    ensure(message in body, False, error_msg)
+@then('I should see "{text}" in the "{element_name}" dropdown')
+def step_impl(context, text, element_name):
+    element_id = ID_PREFIX + element_name.lower().replace(' ', '_')
+    element = Select(context.driver.find_element_by_id(element_id))
+    expect(element.first_selected_option.text).to_equal(text)
 
 @then('the "{element_name}" field should be empty')
 def step_impl(context, element_name):
