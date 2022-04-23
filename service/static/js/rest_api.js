@@ -40,7 +40,7 @@ $(function () {
     let data = {
       name: name,
       category: category,
-      quantity: quantity,
+      quantity: parseInt(quantity, 10),
       condition: condition,
     };
 
@@ -76,7 +76,7 @@ $(function () {
     let data = {
       name: name,
       category: category,
-      quantity: quantity,
+      quantity: parseInt(quantity, 10),
       condition: condition,
     };
 
