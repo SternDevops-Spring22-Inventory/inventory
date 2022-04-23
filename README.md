@@ -1,4 +1,4 @@
-[![Build Status](https://github.com/SternDevops-Spring22-Inventory/inventory/actions/workflows/workflow.yml/badge.svg)](https://github.com/SternDevops-Spring22-Inventory/inventory/actions)
+[![Build Status](https://github.com/SternDevops-Spring22-Inventory/inventory/actions/workflows/tdd-tests.yml/badge.svg)](https://github.com/SternDevops-Spring22-Inventory/inventory/actions)
 [![codecov](https://codecov.io/gh/SternDevops-Spring22-Inventory/inventory/branch/main/graph/badge.svg?token=LMHBZODI21)](https://codecov.io/gh/SternDevops-Spring22-Inventory/inventory)
 
 # This is our guide for how to use the Inventory Microservice (and make changes)
