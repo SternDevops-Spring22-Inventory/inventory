@@ -100,17 +100,17 @@ $(function () {
   });
 
   // ****************************************
-  // Retrieve a Pet
+  // Retrieve an Item
   // ****************************************
 
   $('#retrieve-btn').click(function () {
-    let pet_id = $('#pet_id').val();
+    let item_id = $('#item_id').val();
 
     $('#flash_message').empty();
 
     let ajax = $.ajax({
       type: 'GET',
-      url: `/pets/${pet_id}`,
+      url: `/inventory/${item_id}`,
       contentType: 'application/json',
       data: '',
     });
@@ -128,24 +128,24 @@ $(function () {
   });
 
   // ****************************************
-  // Delete a Pet
+  // Delete an Item
   // ****************************************
 
   $('#delete-btn').click(function () {
-    let pet_id = $('#pet_id').val();
+    let item_id = $('#item_id').val();
 
     $('#flash_message').empty();
 
     let ajax = $.ajax({
       type: 'DELETE',
-      url: `/pets/${pet_id}`,
+      url: `/inventory/${item_id}`,
       contentType: 'application/json',
       data: '',
     });
 
     ajax.done(function (res) {
       clear_form_data();
-      flash_message('Pet has been Deleted!');
+      flash_message('Item has been Deleted!');
     });
 
     ajax.fail(function (res) {
