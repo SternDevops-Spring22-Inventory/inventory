@@ -189,6 +189,15 @@ class TestItemModel(unittest.TestCase):
         self.assertEqual(items[0].id, 1)
         self.assertEqual(items[0].category, "shirt")
 
+    def test_find_by_name(self):
+        """Find an Item by Name"""
+        Items(name="blueShirt", category="shirt", quantity=10).create()
+        Items(name="blackPants", category="pants", quantity=5).create()
+        search_item = Items.find_by_name("blueShirt")
+        self.assertEqual(search_item[0].category, "shirt")
+        self.assertEqual(search_item[0].name, "blueShirt")
+        self.assertEqual(search_item[0].quantity, 10)
+
     def test_find_by_category(self):
         """Find Items by Category"""
         Items(name="blue shirt", category="shirt", quantity=5).create()
@@ -197,3 +206,4 @@ class TestItemModel(unittest.TestCase):
         self.assertEqual(items[0].category, "socks")
         self.assertEqual(items[0].name, "white socks")
         self.assertEqual(items[0].quantity, 0)
+
