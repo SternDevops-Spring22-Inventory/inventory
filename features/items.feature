@@ -13,8 +13,26 @@ Background:
 
 Scenario: The server is running
     When I visit the "Home Page"
-    Then I should see "Inventory RESTful Service" in the title
+    Then I should see "Inventory Demo REST API Service" in the title
     And I should not see "404 Not Found"
+
+Scenario: Create an Item 
+    When I visit the "Home Page"
+    And I set the "Name" to "red skirt"
+    And I set the "Category" to "skirts"
+    And I set the "Quantity" to "3"
+    And I select "NEW" in the "Condition" dropdown
+    And I press the "Create" button
+    Then I should see the message "Success"
+    When I copy the "Id" field
+    And I press the "Clear" button
+    Then the "Id" field should be empty
+    When I paste the "Id" field
+    And I press the "Retrieve" button
+    Then I should see "red skirt" in the "Name" field
+    And I should see "skirts" in the "Category" field
+    And I should see "3" in the "Quantity" field
+    And I should see "NEW" in the "Condition" dropdown
 
 Scenario: Update an Item
     When I visit the "Home Page"
@@ -25,9 +43,9 @@ Scenario: Update an Item
     When I change "Name" to "white socks"
     And I press the "Update" button
     Then I should see the message "Success"
-    When I copy the "Item Id" field
+    When I copy the "Id" field 
     And I press the "Clear" button
-    And I paste the "Item Id" field
+    And I paste the "Id" field
     And I press the "Retrieve" button
     Then I should see "white socks" in the "Name" field
     When I press the "Clear" button
