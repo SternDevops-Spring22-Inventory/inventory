@@ -73,4 +73,3 @@ Scenario: Retrieve an Item
     And I paste the "Id" field
     And I press the "Retrieve" button
     Then I should see the message "Success"
-    
