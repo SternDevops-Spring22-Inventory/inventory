@@ -73,3 +73,15 @@ Scenario: Retrieve an Item
     And I paste the "Id" field
     And I press the "Retrieve" button
     Then I should see the message "Success"
+
+Scenario: Delete an Item
+    When I visit the "Home Page"
+    And I set the "Name" to "blue shirt"
+    And I press the "Search" button
+    Then I should see "blue shirt" in the "Name" field
+    And I should see "1" in the "Quantity" field
+    When I press the "Delete" button
+    Then I should see the message "Item has been Deleted!"
+    When I set the "Name" to "blue shirt"
+    And I press the "Search" button
+    Then I should not see "blue shirt" in the results
