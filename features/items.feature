@@ -52,3 +52,25 @@ Scenario: Update an Item
     And I press the "Search" button
     Then I should see "white socks" in the results
     Then I should not see "blue shirt" in the results
+
+Scenario: Retrieve an Item
+    When I visit the "Home Page"
+    And I press the "Search" button
+    Then I should see the message "Success"
+    When I copy the "Id" field 
+    And I press the "Clear" button
+    And I paste the "Id" field
+    And I press the "Retrieve" button
+    Then I should see the message "Success"
+    When I set the "Name" to "purple pants"
+    And I set the "Category" to "pants"
+    And I set the "Quantity" to "3"
+    And I select "NEW" in the "Condition" dropdown
+    And I press the "Create" button
+    Then I should see the message "Success"
+    When I copy the "Id" field 
+    And I press the "Clear" button
+    And I paste the "Id" field
+    And I press the "Retrieve" button
+    Then I should see the message "Success"
+    
