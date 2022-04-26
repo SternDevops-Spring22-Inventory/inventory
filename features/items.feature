@@ -74,6 +74,24 @@ Scenario: Retrieve an Item
     And I press the "Retrieve" button
     Then I should see the message "Success"
 
+Scenario: Search for an Item by Category
+    When I visit the "Home Page"
+    And I set the "Category" to "shirt"
+    And I press the "Search" button
+    Then I should see "blue shirt" in the results
+    And I should not see "white socks" in the results
+    And I should not see "black pants" in the results
+    And I should not see "brown shorts" in the results
+    
+# Scenario: Search for an Item
+#     When I visit the "Home Page"
+#     And I select "NEW" in the "Condition" dropdown
+#     And I press the "Search" button
+#     Then I should see "blue shirt" in the results
+#     And I should see "white socks" in the results
+#     And I should see "black pants" in the results
+#     And I should see "brown shorts" in the results
+
 Scenario: Delete an Item
     When I visit the "Home Page"
     And I set the "Name" to "blue shirt"
@@ -85,3 +103,4 @@ Scenario: Delete an Item
     When I set the "Name" to "blue shirt"
     And I press the "Search" button
     Then I should not see "blue shirt" in the results
+
