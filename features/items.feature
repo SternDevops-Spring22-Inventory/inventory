@@ -91,3 +91,16 @@ Scenario: Search for an Item by Category
 #     And I should see "white socks" in the results
 #     And I should see "black pants" in the results
 #     And I should see "brown shorts" in the results
+
+Scenario: Delete an Item
+    When I visit the "Home Page"
+    And I set the "Name" to "blue shirt"
+    And I press the "Search" button
+    Then I should see "blue shirt" in the "Name" field
+    And I should see "1" in the "Quantity" field
+    When I press the "Delete" button
+    Then I should see the message "Item has been Deleted!"
+    When I set the "Name" to "blue shirt"
+    And I press the "Search" button
+    Then I should not see "blue shirt" in the results
+
