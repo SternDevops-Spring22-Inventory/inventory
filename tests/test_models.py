@@ -200,10 +200,21 @@ class TestItemModel(unittest.TestCase):
 
     def test_find_by_category(self):
         """Find Items by Category"""
-        Items(name="blue shirt", category="shirt", quantity=5).create()
-        Items(name="white socks", category="socks", quantity=0).create()
+        Items(name="blue shirt", category="shirt", quantity=5, condition="NEW").create()
+        Items(name="red shirt", category="shirt", quantity=5, condition="USED").create()
+        Items(name="white socks", category="socks", quantity=0, condition="NEW").create()
+        Items(name="blue socks", category="socks", quantity=5, condition="USED").create()
         items = Items.find_by_category("socks")
-        self.assertEqual(items[0].category, "socks")
-        self.assertEqual(items[0].name, "white socks")
-        self.assertEqual(items[0].quantity, 0)
+        item_list = [item for item in items]
+        self.assertEqual(len(item_list), 2)
+
+    # def test_find_by_condition(self):
+    #     """Find Items by Condition"""
+    #     Items(name="blue shirt", category="shirt", quantity=5, condition="NEW").create()
+    #     Items(name="red shirt", category="shirt", quantity=5, condition="USED").create()
+    #     Items(name="white socks", category="socks", quantity=0, condition="NEW").create()
+    #     Items(name="blue socks", category="socks", quantity=5, condition="USED").create()
+    #     items = Items.find_by_condition("NEW")
+    #     item_list = [item for item in items]
+    #     self.assertEqual(len(item_list), 2)
 
