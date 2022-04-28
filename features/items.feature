@@ -102,5 +102,6 @@ Scenario: Delete an Item
     Then I should see the message "Item has been Deleted!"
     When I set the "Name" to "blue shirt"
     And I press the "Search" button
+    Then I should see the message "Success"
     Then I should not see "blue shirt" in the results
 
