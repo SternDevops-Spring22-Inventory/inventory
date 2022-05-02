@@ -165,6 +165,32 @@ $(function () {
   });
 
   // ****************************************
+  // Disable an Item
+  // ****************************************
+
+  $('#disable-btn').click(function () {
+    let item_id = $("#item_id").val();
+
+    $('#flash_message').empty();
+
+    let ajax = $.ajax({
+      type: 'PUT',
+      url: `/inventory/${item_id}/disable`,
+      contentType: 'application/json',
+      data: "",
+    });
+
+    ajax.done(function (res) {
+      update_form_data(res);
+      flash_message('Success');
+    });
+
+    ajax.fail(function (res) {
+      flash_message(res.responseJSON.message);
+    });
+  });
+
+  // ****************************************
   // Search for an Item
   // ****************************************
 
