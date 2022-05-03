@@ -105,3 +105,12 @@ Scenario: Delete an Item
     Then I should see the message "Success"
     Then I should not see "blue shirt" in the results
 
+Scenario: Disabling an Item (Setting Quantity to Zero)
+    When I visit the "Home Page"
+    And I press the "Search" button
+    Then I should see "blue shirt" in the "Name" field
+    And I should see "1" in the "Quantity" field
+    When I press the "Disable" button
+    Then I should see the message "Success"
+    And I should see "0" in the "Quantity" field
+
