@@ -45,13 +45,12 @@ class TestItemModel(unittest.TestCase):
 
     def setUp(self):
         """This runs before each test"""
-        db.drop_all()  # clean up the last tests
-        db.create_all()  # make our sqlalchemy tables
+        db.session.query(Items).delete() # clean up the last tests
+        db.session.commit()
 
     def tearDown(self):
         """This runs after each test"""
         db.session.remove()
-        db.drop_all()
 
     ######################################################################
     #  T E S T   C A S E S
