@@ -45,13 +45,15 @@ class TestItemModel(unittest.TestCase):
 
     def setUp(self):
         """This runs before each test"""
-        db.drop_all()  # clean up the last tests
-        db.create_all()  # make our sqlalchemy tables
+        # db.drop_all()  # clean up the last tests
+        # db.create_all()  # make our sqlalchemy tables
+        db.session.query(Items).delete() # clean up the last tests
+        db.session.commit()
 
     def tearDown(self):
         """This runs after each test"""
         db.session.remove()
-        db.drop_all()
+        # db.drop_all()
 
     ######################################################################
     #  T E S T   C A S E S
@@ -88,7 +90,7 @@ class TestItemModel(unittest.TestCase):
         item = ItemFactory()
         logging.debug(item)
         item.create()
-        self.assertEqual(item.id, 1)
+        self.assertIsNotNone(item.id)
         # Fetch it back
         found_item = Items.find(item.id)
         self.assertEqual(found_item.id, item.id)
@@ -175,7 +177,7 @@ class TestItemModel(unittest.TestCase):
         logging.debug(item)
         item.create()
         logging.debug(item)
-        self.assertEqual(item.id, 1)
+        self.assertIsNotNone(item.id)
         # Change it an save it
         item.category = "shirt"
         original_id = item.id
@@ -186,7 +188,7 @@ class TestItemModel(unittest.TestCase):
         # but the data did change
         items = Items.all()
         self.assertEqual(len(items), 1)
-        self.assertEqual(items[0].id, 1)
+        self.assertEqual(items[0].id, item.id)
         self.assertEqual(items[0].category, "shirt")
 
     def test_find_by_name(self):
